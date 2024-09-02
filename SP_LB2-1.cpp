@@ -22,7 +22,7 @@ LPCTSTR ProcImage[4] = {
 TCHAR CmdParam[4][260] = {
     TEXT(""),
     TEXT(""),
-    _T("Notepad D:\Learning\programming\c++_projects\SP_LB2-1\\resource.h"),
+    _T("Notepad C:\\Users\\Alex\\Downloads\\GitHubLinks.txt"),
     TEXT("")
 };
 
@@ -116,52 +116,74 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     switch (message)
     {
     case WM_COMMAND:
+    {
+        int wmId = LOWORD(wParam);
+
+        switch (wmId)
         {
-            int wmId = LOWORD(wParam);
-            
-            switch (wmId)
+        case ID_PROCESSES_NOTEPAD:
+        {
+            SECURITY_ATTRIBUTES sap, sat;
+            sat = createBaseScurityAttributes();
+            sap = createBaseScurityAttributes();
+            STARTUPINFO sti;
+            ZeroMemory(&sti, sizeof(STARTUPINFO));
+            sti.cb = sizeof(STARTUPINFO);
+            STARTUPINFO* lpSti = &sti;
+            PROCESS_INFORMATION pi;
+            if (CreateProcess(ProcImage[1], nullptr, &sap, &sat, FALSE, 0, nullptr, nullptr, lpSti, &pi))
             {
-            case ID_PROCESSES_NOTEPAD:
+                ProcHandle[1] = pi.hProcess;
+                ProcId[1] = pi.dwProcessId;
+                ThreadHandle[1] = pi.hThread;
+                ThreadId[1] = pi.dwThreadId;
+                CloseHandle(ProcHandle[1]);
+                CloseHandle(ThreadHandle[1]);
+            }
+            else
             {
-                SECURITY_ATTRIBUTES sap, sat;
-                sap.nLength = sizeof(SECURITY_ATTRIBUTES);
-                sap.lpSecurityDescriptor = nullptr;
-                sap.bInheritHandle = FALSE;
-                sat.nLength = sizeof(SECURITY_ATTRIBUTES);
-                sat.lpSecurityDescriptor = nullptr;
-                sat.bInheritHandle = FALSE;
-                STARTUPINFO sti;
-                ZeroMemory(&sti, sizeof(STARTUPINFO));
-                sti.cb = sizeof(STARTUPINFO);
-                STARTUPINFO* lpSti = &sti;
-                PROCESS_INFORMATION pi;
-                if (CreateProcess(ProcImage[1], nullptr, &sap, &sat, FALSE, 0, nullptr, nullptr, lpSti, &pi))
-                {
-                    ProcHandle[1] = pi.hProcess;
-                    ProcId[1] = pi.dwProcessId;
-                    ThreadHandle[1] = pi.hThread;
-                    ThreadId[1] = pi.dwThreadId;
-                    CloseHandle(ProcHandle[1]);
-                    CloseHandle(ThreadHandle[1]);
-                }
-                else
-                {
-                    MessageBox(NULL, _T("The \"Notepad\" thread was not created!"), _T("Error"), MB_OK);
-                }
-                break;
+                MessageBox(NULL, _T("The \"Notepad\" thread was not created!"), _T("Error"), MB_OK);
+            }
+            break;
+        }
+        case ID_PROCESSES_NOTEPADWITHTEXT:
+        {
+            SECURITY_ATTRIBUTES sap, sat;
+            sap = createBaseScurityAttributes();
+            sat = createBaseScurityAttributes();
+            STARTUPINFO sti;
+            ZeroMemory(&sti, sizeof(STARTUPINFO));
+            sti.cb = sizeof(STARTUPINFO);
+            STARTUPINFO* lpSti = &sti;
+            PROCESS_INFORMATION pi;
+            if (CreateProcess(ProcImage[2], CmdParam[2], &sap, &sat, FALSE, 0, nullptr, nullptr, lpSti, &pi))
+            {
+                ProcHandle[2] = pi.hProcess;
+                ProcId[1] = pi.dwProcessId;
+                ThreadHandle[2] = pi.hThread;
+                ThreadId[2] = pi.dwThreadId;
+            }
+            else
+            {
+                MessageBox(NULL, _T("The \"Notepad with text\" thread was not created!"), _T("Error"), MB_OK);
             }
 
-            case IDM_ABOUT:
-                DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
-                break;
-            case IDM_EXIT:
-                DestroyWindow(hWnd);
-                break;
-            default:
-                return DefWindowProc(hWnd, message, wParam, lParam);
-            }
+            break;
+        }
+
+        case IDM_ABOUT:
+            DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
+            break;
+        case IDM_EXIT:
+            DestroyWindow(hWnd);
+            break;
+        default:
+            return DefWindowProc(hWnd, message, wParam, lParam);
+
+
         }
         break;
+    }
     case WM_PAINT:
         {
             PAINTSTRUCT ps;
