@@ -170,7 +170,31 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
             break;
         }
+        case ID_PROCESSES_CALCULATOR:
+        {
+            SECURITY_ATTRIBUTES sap, sat;
+            sap = createBaseScurityAttributes();
+            sat = createBaseScurityAttributes();
+            STARTUPINFO sti;
+            ZeroMemory(&sti, sizeof(STARTUPINFO));
+            sti.cb = sizeof(STARTUPINFO);
+            STARTUPINFO* lpSti = &sti;
+            PROCESS_INFORMATION pi;
+            if (CreateProcess(ProcImage[3], nullptr, &sap, &sat, FALSE, 0, nullptr,
+                nullptr, lpSti, &pi))
+            {
+                ProcHandle[3] = pi.hProcess;
+                ProcId[3] = pi.dwProcessId;
+                ThreadHandle[3] = pi.hThread;
+                ThreadId[3] = pi.dwThreadId;
+            }
+            else
+            {
+                MessageBox(NULL, TEXT("The \"Calculator\" thread was not created!"), _T("Error"), MB_OK);
+            }
 
+            break;
+        }
         case IDM_ABOUT:
             DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
             break;
