@@ -9,6 +9,24 @@ HINSTANCE hInst;                                // текущий экземпл
 WCHAR szTitle[MAX_LOADSTRING];                  // Текст строки заголовка
 WCHAR szWindowClass[MAX_LOADSTRING];            // имя класса главного окна
 
+HANDLE ProcHandle[4] = { nullptr, nullptr, nullptr, nullptr };
+DWORD ProcId[4] = { 0, 0, 0, 0 };
+HANDLE ThreadHandle[4] = { nullptr, nullptr, nullptr, nullptr };
+DWORD ThreadId[4] = { 0, 0, 0, 0 };
+LPCTSTR ProcImage[4] = {
+    nullptr,
+    _T("C:\\Windows\\notepad.exe"),
+    nullptr,
+    TEXT("C:\\Windows\\System32\\calc.exe")
+};
+TCHAR CmdParam[4][260] = {
+    TEXT(""),
+    TEXT(""),
+    _T("Notepad D:\Learning\programming\c++_projects\SP_LB2-1\\resource.h"),
+    TEXT("")
+};
+
+
 
 // Отправить объявления функций, включенных в этот модуль кода:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -103,6 +121,36 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             
             switch (wmId)
             {
+            case ID_PROCESSES_NOTEPAD:
+            {
+                SECURITY_ATTRIBUTES sap, sat;
+                sap.nLength = sizeof(SECURITY_ATTRIBUTES);
+                sap.lpSecurityDescriptor = nullptr;
+                sap.bInheritHandle = FALSE;
+                sat.nLength = sizeof(SECURITY_ATTRIBUTES);
+                sat.lpSecurityDescriptor = nullptr;
+                sat.bInheritHandle = FALSE;
+                STARTUPINFO sti;
+                ZeroMemory(&sti, sizeof(STARTUPINFO));
+                sti.cb = sizeof(STARTUPINFO);
+                STARTUPINFO* lpSti = &sti;
+                PROCESS_INFORMATION pi;
+                if (CreateProcess(ProcImage[1], nullptr, &sap, &sat, FALSE, 0, nullptr, nullptr, lpSti, &pi))
+                {
+                    ProcHandle[1] = pi.hProcess;
+                    ProcId[1] = pi.dwProcessId;
+                    ThreadHandle[1] = pi.hThread;
+                    ThreadId[1] = pi.dwThreadId;
+                    CloseHandle(ProcHandle[1]);
+                    CloseHandle(ThreadHandle[1]);
+                }
+                else
+                {
+                    MessageBox(NULL, _T("The \"Notepad\" thread was not created!"), _T("Error"), MB_OK);
+                }
+                break;
+            }
+
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
                 break;
