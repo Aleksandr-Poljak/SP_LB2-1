@@ -137,8 +137,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 ProcId[1] = pi.dwProcessId;
                 ThreadHandle[1] = pi.hThread;
                 ThreadId[1] = pi.dwThreadId;
-                CloseHandle(ProcHandle[1]);
-                CloseHandle(ThreadHandle[1]);
+                /*CloseHandle(ProcHandle[1]);
+                CloseHandle(ThreadHandle[1]);*/
             }
             else
             {
@@ -146,6 +146,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
             break;
         }
+
         case ID_PROCESSES_NOTEPADWITHTEXT:
         {
             SECURITY_ATTRIBUTES sap, sat;
@@ -170,6 +171,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
             break;
         }
+
         case ID_PROCESSES_CALCULATOR:
         {
             SECURITY_ATTRIBUTES sap, sat;
@@ -195,19 +197,53 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
             break;
         }
+
+        case ID_PROCESSES_CLOSENOTEPAD:
+        {
+            if (ProcHandle[1] == NULL)
+            {
+                MessageBox(NULL, _T("Process handle is invalid!"), _T("Error"), MB_OK);
+                break;
+            }
+
+            BOOL flag = TerminateProcess(ProcHandle[1], 0);
+            if (!flag)
+            {
+                DWORD error = GetLastError();
+                TCHAR msg[256];
+                _stprintf_s(msg, _T("TerminateProcess failed with error code: %lu"), error);
+                MessageBox(NULL, msg, _T("Error"), MB_OK);
+            }
+            else
+            {
+                MessageBox(NULL, _T("Process terminated successfully."), _T("Success"), MB_OK);
+            }
+
+            CloseHandle(ProcHandle[1]);
+            ProcHandle[1] = NULL;
+            break;
+            
+        }
+
         case IDM_ABOUT:
+        {
             DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
             break;
+        }
+
         case IDM_EXIT:
+        {
             DestroyWindow(hWnd);
             break;
+        }
         default:
             return DefWindowProc(hWnd, message, wParam, lParam);
-
 
         }
         break;
     }
+
+
     case WM_PAINT:
         {
             PAINTSTRUCT ps;
