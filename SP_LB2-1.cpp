@@ -136,22 +136,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             sti.cb = sizeof(STARTUPINFO);
             STARTUPINFO* lpSti = &sti;
             PROCESS_INFORMATION pi;
-            if (CreateProcess(ProcImage[1], nullptr, &sap, &sat, FALSE, 0, nullptr, nullptr, lpSti, &pi))
+
+            if (CreateProcess(ProcImage[1], nullptr, &sat, &sap, FALSE, 0, nullptr, nullptr, lpSti, &pi))
             {
                 ProcHandle[1] = pi.hProcess;
                 ProcId[1] = pi.dwProcessId;
                 ThreadHandle[1] = pi.hThread;
                 ThreadId[1] = pi.dwThreadId;
-                /*CloseHandle(ProcHandle[1]);
-                CloseHandle(ThreadHandle[1]);*/
             }
             else
             {
                 MessageBox(NULL, _T("The \"Notepad\" thread was not created!"), _T("Error"), MB_OK);
             }
-            break;
+            
         }
-
+        break;
         case ID_PROCESSES_NOTEPADWITHTEXT:
         {
             SECURITY_ATTRIBUTES sap, sat;
@@ -205,29 +204,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         case ID_PROCESSES_CLOSENOTEPAD:
         {
-            if (ProcHandle[1] == NULL)
+            if (ProcHandle[1] != NULL)
             {
-                MessageBox(NULL, _T("Process handle is invalid!"), _T("Error"), MB_OK);
-                break;
-            }
-
-            BOOL flag = TerminateProcess(ProcHandle[1], 0);
-            if (!flag)
-            {
-                DWORD error = GetLastError();
                 TCHAR msg[256];
-                _stprintf_s(msg, _T("TerminateProcess failed with error code: %lu"), error);
-                MessageBox(NULL, msg, _T("Error"), MB_OK);
-            }
-            else
-            {
-                MessageBox(NULL, _T("Process terminated successfully."), _T("Success"), MB_OK);
-            }
-
-            CloseHandle(ProcHandle[1]);
-            ProcHandle[1] = NULL;
+                HWND hWndNotepad = FindWindow(_T("Notepad"), NULL);
+                if (hWndNotepad != NULL)
+                {
+                    PostMessage(hWndNotepad, WM_CLOSE, 0, 0);
+                    TerminateProcess(ProcHandle[1], 14);
+                }
+            }                             
             break;
-            
         }
 
         case ID_PROCESSINFORMATION_CURRENT:
