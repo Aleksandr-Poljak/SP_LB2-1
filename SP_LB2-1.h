@@ -29,3 +29,13 @@ extern TCHAR CmdParam[4][260];
 /// SECURITY_ATTRIBUTES
 /// </returns>
 SECURITY_ATTRIBUTES createBaseScurityAttributes();
+
+/// <summary>
+/// Функция обработки диалогового окна о программе.
+/// </summary>
+INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+
+/// <summary>
+/// Функция обработки диалогового окна инофрмации о процессах
+/// </summary>
+INT_PTR CALLBACK DlgInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);

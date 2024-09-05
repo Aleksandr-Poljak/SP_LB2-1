@@ -16,7 +16,7 @@ DWORD ThreadId[4] = { 0, 0, 0, 0 };
 LPCTSTR ProcImage[4] = {
     nullptr,
     _T("C:\\Windows\\notepad.exe"),
-    nullptr,
+    _T("C:\\Windows\\notepad.exe"),
     TEXT("C:\\Windows\\System32\\calc.exe")
 };
 TCHAR CmdParam[4][260] = {
@@ -113,6 +113,11 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+    ProcHandle[0] = GetCurrentProcess();
+    ProcId[0] = GetCurrentProcessId();
+    ThreadHandle[0] = GetCurrentThread();
+    ThreadId[0] = GetCurrentThreadId();
+
     switch (message)
     {
     case WM_COMMAND:
@@ -225,6 +230,42 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             
         }
 
+        case ID_PROCESSINFORMATION_CURRENT:
+        {
+            DialogBoxParam(
+                (HINSTANCE)GetWindowLong(hWnd, GWLP_HINSTANCE),
+                MAKEINTRESOURCE(IDD_DIALOG1), hWnd, DlgInfo, 0
+                );
+            break;
+        }
+
+        case ID_PROCESSINFORMATION_NOTEPAD:
+        {
+            DialogBoxParam(
+                (HINSTANCE)GetWindowLong(hWnd, GWLP_HINSTANCE),
+                MAKEINTRESOURCE(IDD_DIALOG1), hWnd, DlgInfo, 1
+            );
+            break;
+        }
+
+        case ID_PROCESSINFORMATION_NOTEPADWITHTEXT:
+        {
+            DialogBoxParam(
+                (HINSTANCE)GetWindowLong(hWnd, GWLP_HINSTANCE),
+                MAKEINTRESOURCE(IDD_DIALOG1), hWnd, DlgInfo, 2
+            );
+            break;
+        }
+
+        case ID_PROCESSINFORMATION_CALCULATOR:
+        {
+            DialogBoxParam(
+                (HINSTANCE)GetWindowLong(hWnd, GWLP_HINSTANCE),
+                MAKEINTRESOURCE(IDD_DIALOG1), hWnd, DlgInfo, 3
+            );
+            break;
+        }
+
         case IDM_ABOUT:
         {
             DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
@@ -243,7 +284,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     }
 
-
     case WM_PAINT:
         {
             PAINTSTRUCT ps;
@@ -260,21 +300,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
-{
-    UNREFERENCED_PARAMETER(lParam);
-    switch (message)
-    {
-    case WM_INITDIALOG:
-        return (INT_PTR)TRUE;
 
-    case WM_COMMAND:
-        if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
-        {
-            EndDialog(hDlg, LOWORD(wParam));
-            return (INT_PTR)TRUE;
-        }
-        break;
-    }
-    return (INT_PTR)FALSE;
-}
+
+

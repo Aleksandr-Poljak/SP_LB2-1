@@ -133,6 +133,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="dlgFuncs.cpp" />
     <ClCompile Include="SP_LB2-1.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
