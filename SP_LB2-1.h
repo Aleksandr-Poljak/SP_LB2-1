@@ -39,3 +39,8 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 /// Функция обработки диалогового окна инофрмации о процессах
 /// </summary>
 INT_PTR CALLBACK DlgInfo(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+
+/// <summary>
+/// Запуск приложения TestProc
+/// </summary>
+void StartTestPocApp();

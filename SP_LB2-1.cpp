@@ -274,6 +274,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             break;
         }
 
+        case ID_TESTPROC:
+        {
+            StartTestPocApp();
+            break;
+        }
+
         case IDM_ABOUT:
         {
             DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
