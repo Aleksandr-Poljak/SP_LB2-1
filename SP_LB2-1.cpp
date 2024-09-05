@@ -1,6 +1,7 @@
 ﻿#include "framework.h"
 #include "SP_LB2-1.h"
 #include "Windows.h"
+#include <commdlg.h>
 
 #define MAX_LOADSTRING 256
 
@@ -128,6 +129,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
         case ID_PROCESSES_NOTEPAD:
         {
+
             SECURITY_ATTRIBUTES sap, sat;
             sat = createBaseScurityAttributes();
             sap = createBaseScurityAttributes();
@@ -153,6 +155,25 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
         case ID_PROCESSES_NOTEPADWITHTEXT:
         {
+            OPENFILENAME ofn;
+            TCHAR szFileName[MAX_PATH] = { 0 };
+            ZeroMemory(&ofn, sizeof(OPENFILENAME));
+            ofn.lStructSize = sizeof(OPENFILENAME);
+            ofn.hwndOwner = NULL;
+            ofn.lpstrFile = szFileName;
+            ofn.nMaxFile = sizeof(szFileName) / sizeof(*szFileName);
+            ofn.lpstrFilter = TEXT("Текстовые файлы (*.txt)\0*.txt\0Все файлы\0*.*\0");
+            ofn.nFilterIndex = 1;
+            ofn.lpstrFileTitle = NULL;
+            ofn.nMaxFileTitle = 0;
+            ofn.lpstrInitialDir = NULL;
+            ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+            if (GetOpenFileName(&ofn))
+            {
+                _stprintf_s(CmdParam[2], _T("Notepad \"%s\""), ofn.lpstrFile);
+            }
+
+
             SECURITY_ATTRIBUTES sap, sat;
             sap = createBaseScurityAttributes();
             sat = createBaseScurityAttributes();
@@ -161,7 +182,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             sti.cb = sizeof(STARTUPINFO);
             STARTUPINFO* lpSti = &sti;
             PROCESS_INFORMATION pi;
-            if (CreateProcess(ProcImage[2], CmdParam[2], &sap, &sat, FALSE, 0, nullptr, nullptr, lpSti, &pi))
+            if (CreateProcess(nullptr, CmdParam[2], &sap, &sat, FALSE, 0, nullptr, nullptr, lpSti, &pi))
             {
                 ProcHandle[2] = pi.hProcess;
                 ProcId[1] = pi.dwProcessId;
